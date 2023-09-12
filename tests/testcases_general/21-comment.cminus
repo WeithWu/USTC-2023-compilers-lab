@@ -1,0 +1,2 @@
+/*this is comment*/
+void main(void) { return; }

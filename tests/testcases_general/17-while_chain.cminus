@@ -1,0 +1,13 @@
+int main(void) {
+    int i;
+    int j;
+    i = 10;
+    while (i) {
+        i = i - 1;
+        j = i;
+        while(j) {
+            j = j - 1;
+        }
+    }
+    return i + j;
+}

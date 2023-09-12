@@ -1,0 +1,14 @@
+int main(void) {
+    int a;
+    int b;
+    int c;
+    c = 0;
+    a = 2;
+    b = 1;
+    if (b) 
+        if (c)
+            a = 4;
+        else 
+            a = 3;
+    return a;
+}

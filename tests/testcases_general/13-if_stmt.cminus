@@ -1,0 +1,8 @@
+void main(void) {
+    int a;
+    a = 2;
+    if (a)
+        a = 3;
+    a = 4;
+    return;
+}

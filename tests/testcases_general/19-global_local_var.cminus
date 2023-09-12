@@ -1,0 +1,11 @@
+int a;
+void GlobalAssign(void) {
+    a = 10;
+    return;
+}
+int main(void) {
+    int a;
+    GlobalAssign();
+    a = 20;
+    return a;
+}

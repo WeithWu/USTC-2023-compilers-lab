@@ -1,0 +1,17 @@
+int main(void) {
+    int i;
+    int a;
+    int b;
+    a = 0;
+    b = 0;
+    i = 10;
+    while (i) {
+        i = i - 1;
+        if (i < 5)
+            a = a + i;
+        else {
+            b = b + i;
+        }
+    }
+    return a + b;
+}

@@ -1,0 +1,6 @@
+int addone(int a) { return a + 1; }
+int main(void) {
+    int result;
+    result = addone(addone(addone(addone(1230))));
+    return result;
+}
