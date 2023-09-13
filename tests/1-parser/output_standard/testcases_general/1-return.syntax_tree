@@ -1,0 +1,23 @@
+>--+ program
+|  >--+ declaration-list
+|  |  >--+ declaration
+|  |  |  >--+ fun-declaration
+|  |  |  |  >--+ type-specifier
+|  |  |  |  |  >--* void
+|  |  |  |  >--* main
+|  |  |  |  >--* (
+|  |  |  |  >--+ params
+|  |  |  |  |  >--* void
+|  |  |  |  >--* )
+|  |  |  |  >--+ compound-stmt
+|  |  |  |  |  >--* {
+|  |  |  |  |  >--+ local-declarations
+|  |  |  |  |  |  >--* epsilon
+|  |  |  |  |  >--+ statement-list
+|  |  |  |  |  |  >--+ statement-list
+|  |  |  |  |  |  |  >--* epsilon
+|  |  |  |  |  |  >--+ statement
+|  |  |  |  |  |  |  >--+ return-stmt
+|  |  |  |  |  |  |  |  >--* return
+|  |  |  |  |  |  |  |  >--* ;
+|  |  |  |  |  >--* }

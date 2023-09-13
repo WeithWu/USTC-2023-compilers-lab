@@ -3,6 +3,12 @@
 # DO NOT MODIFY!
 # If you need customized behavior, please create your own script.
 
+if [[ $# -lt 1 ]]; then
+    echo "usage: ./test_syntax.sh <input> [<summary>]"
+    echo "       <input> can be one of 'easy', 'normal', 'hard', and 'testcases_general'."
+    echo "       <summary> can be one of 'no', 'yes', and 'verbose'. the default value is 'no'"
+    exit 1
+fi
 CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 TESTCASE="${1:-testcase}"
 if [[ $TESTCASE == 'easy' || $TESTCASE == 'normal' || $TESTCASE == 'hard' ]]; then

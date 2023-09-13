@@ -1,0 +1,147 @@
+>--+ program
+|  >--+ declaration-list
+|  |  >--+ declaration
+|  |  |  >--+ fun-declaration
+|  |  |  |  >--+ type-specifier
+|  |  |  |  |  >--* int
+|  |  |  |  >--* main
+|  |  |  |  >--* (
+|  |  |  |  >--+ params
+|  |  |  |  |  >--* void
+|  |  |  |  >--* )
+|  |  |  |  >--+ compound-stmt
+|  |  |  |  |  >--* {
+|  |  |  |  |  >--+ local-declarations
+|  |  |  |  |  |  >--+ local-declarations
+|  |  |  |  |  |  |  >--+ local-declarations
+|  |  |  |  |  |  |  |  >--+ local-declarations
+|  |  |  |  |  |  |  |  |  >--* epsilon
+|  |  |  |  |  |  |  |  >--+ var-declaration
+|  |  |  |  |  |  |  |  |  >--+ type-specifier
+|  |  |  |  |  |  |  |  |  |  >--* int
+|  |  |  |  |  |  |  |  |  >--* a
+|  |  |  |  |  |  |  |  |  >--* ;
+|  |  |  |  |  |  |  >--+ var-declaration
+|  |  |  |  |  |  |  |  >--+ type-specifier
+|  |  |  |  |  |  |  |  |  >--* int
+|  |  |  |  |  |  |  |  >--* b
+|  |  |  |  |  |  |  |  >--* ;
+|  |  |  |  |  |  >--+ var-declaration
+|  |  |  |  |  |  |  >--+ type-specifier
+|  |  |  |  |  |  |  |  >--* int
+|  |  |  |  |  |  |  >--* c
+|  |  |  |  |  |  |  >--* ;
+|  |  |  |  |  >--+ statement-list
+|  |  |  |  |  |  >--+ statement-list
+|  |  |  |  |  |  |  >--+ statement-list
+|  |  |  |  |  |  |  |  >--+ statement-list
+|  |  |  |  |  |  |  |  |  >--+ statement-list
+|  |  |  |  |  |  |  |  |  |  >--+ statement-list
+|  |  |  |  |  |  |  |  |  |  |  >--* epsilon
+|  |  |  |  |  |  |  |  |  |  >--+ statement
+|  |  |  |  |  |  |  |  |  |  |  >--+ expression-stmt
+|  |  |  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--+ var
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* c
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--* =
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ simple-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ additive-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ term
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ factor
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ integer
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* 0
+|  |  |  |  |  |  |  |  |  |  |  |  >--* ;
+|  |  |  |  |  |  |  |  |  >--+ statement
+|  |  |  |  |  |  |  |  |  |  >--+ expression-stmt
+|  |  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  |  >--+ var
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--* a
+|  |  |  |  |  |  |  |  |  |  |  |  >--* =
+|  |  |  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--+ simple-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ additive-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ term
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ factor
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ integer
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* 2
+|  |  |  |  |  |  |  |  |  |  |  >--* ;
+|  |  |  |  |  |  |  |  >--+ statement
+|  |  |  |  |  |  |  |  |  >--+ expression-stmt
+|  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  >--+ var
+|  |  |  |  |  |  |  |  |  |  |  |  >--* b
+|  |  |  |  |  |  |  |  |  |  |  >--* =
+|  |  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  |  >--+ simple-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--+ additive-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ term
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ factor
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ integer
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* 1
+|  |  |  |  |  |  |  |  |  |  >--* ;
+|  |  |  |  |  |  |  >--+ statement
+|  |  |  |  |  |  |  |  >--+ selection-stmt
+|  |  |  |  |  |  |  |  |  >--* if
+|  |  |  |  |  |  |  |  |  >--* (
+|  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  >--+ simple-expression
+|  |  |  |  |  |  |  |  |  |  |  >--+ additive-expression
+|  |  |  |  |  |  |  |  |  |  |  |  >--+ term
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--+ factor
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ var
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* b
+|  |  |  |  |  |  |  |  |  >--* )
+|  |  |  |  |  |  |  |  |  >--+ statement
+|  |  |  |  |  |  |  |  |  |  >--+ selection-stmt
+|  |  |  |  |  |  |  |  |  |  |  >--* if
+|  |  |  |  |  |  |  |  |  |  |  >--* (
+|  |  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  |  >--+ simple-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--+ additive-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ term
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ factor
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ var
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* c
+|  |  |  |  |  |  |  |  |  |  |  >--* )
+|  |  |  |  |  |  |  |  |  |  |  >--+ statement
+|  |  |  |  |  |  |  |  |  |  |  |  >--+ expression-stmt
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ var
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* a
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* =
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ simple-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ additive-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ term
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ factor
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ integer
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* 4
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--* ;
+|  |  |  |  |  |  |  |  |  |  |  >--* else
+|  |  |  |  |  |  |  |  |  |  |  >--+ statement
+|  |  |  |  |  |  |  |  |  |  |  |  >--+ expression-stmt
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ var
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* a
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* =
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ simple-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ additive-expression
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ term
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ factor
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--+ integer
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* 3
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--* ;
+|  |  |  |  |  |  >--+ statement
+|  |  |  |  |  |  |  >--+ return-stmt
+|  |  |  |  |  |  |  |  >--* return
+|  |  |  |  |  |  |  |  >--+ expression
+|  |  |  |  |  |  |  |  |  >--+ simple-expression
+|  |  |  |  |  |  |  |  |  |  >--+ additive-expression
+|  |  |  |  |  |  |  |  |  |  |  >--+ term
+|  |  |  |  |  |  |  |  |  |  |  |  >--+ factor
+|  |  |  |  |  |  |  |  |  |  |  |  |  >--+ var
+|  |  |  |  |  |  |  |  |  |  |  |  |  |  >--* a
+|  |  |  |  |  |  |  |  >--* ;
+|  |  |  |  |  >--* }
