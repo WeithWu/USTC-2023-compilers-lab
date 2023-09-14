@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 
     if (argc == 2) {
         input = argv[1];
-    } else {
+    } else if(argc >= 3) {
         printf("usage: %s <cminus_file>\n", argv[0]);
         return 1;
     }
