@@ -4,7 +4,7 @@
 # If you need customized behavior, please create your own script.
 
 if [[ $# -lt 1 ]]; then
-    echo "usage: ./test_syntax.sh <input> [<summary>]"
+    echo "usage: ./eval_lab1.sh   <input> [<summary>]"
     echo "       <input> can be one of 'easy', 'normal', 'hard', and 'testcases_general'."
     echo "       <summary> can be one of 'no', 'yes', and 'verbose'. the default value is 'no'"
     exit 1
