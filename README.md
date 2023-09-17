@@ -9,7 +9,7 @@
 简单来说，你需要给上游仓库设置一个别名（alias）。在你 fork 后的本地仓库中：
 
 ```shell
-$ git remote add upstream http://211.86.152.198:8080/staff/2021fall-compiler_cminus.git
+$ git remote add upstream https://cscourse.ustc.edu.cn/vdir/Gitlab/compiler_staff/2023ustc-jianmu-compiler.git
 ```
 
 然后尝试将远程的 commit 与你本地仓库进行 merge 操作：
