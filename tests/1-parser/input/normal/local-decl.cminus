@@ -1,5 +1,5 @@
 int main(void) {
-	int id; float jd;
+	int i; float j;
 	void v;
 	return 0;
 }
