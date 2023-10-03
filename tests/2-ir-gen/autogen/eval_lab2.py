@@ -138,7 +138,7 @@ def eval():
                 continue
 
             if result.returncode == 0:
-                subprocess.run(["clang", "-O0", "-w", "-no-pie", TEST_PATH + ".ll", "-o", TEST_PATH,"-L", "../../build", "-lcminus_io"])
+                subprocess.run(["clang", "-O0", "-w", "-no-pie", TEST_PATH + ".ll", "-o", TEST_PATH, "-L", "../../../build", "-lcminus_io"])
                 input_option = None
                 if need_input:
                     with open(ANSWER_PATH + ".in", "rb") as fin:
