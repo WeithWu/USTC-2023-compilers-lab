@@ -34,8 +34,9 @@ int main() {
     iLoad = builder->create_load(iAlloca);
     auto aLoad = builder->create_load(aAlloca);
     auto addi = builder->create_iadd(CONST_INT(1),iLoad);
-    auto adda = builder->create_iadd(iLoad,aLoad);
     builder->create_store(addi,iAlloca);
+    iLoad = builder->create_load(iAlloca);
+    auto adda = builder->create_iadd(iLoad,aLoad);
     builder->create_store(adda,aAlloca);
     builder->create_br(cmpBB);
     builder->set_insert_point(retBB);
