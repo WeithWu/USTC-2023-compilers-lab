@@ -22,11 +22,14 @@ int main() {
     auto iAlloca = builder->create_alloca(Int32Type);
     builder->create_store(CONST_INT(10),aAlloca);
     builder->create_store(CONST_INT(0),iAlloca);
-    bb = BasicBlock::create(module,"whileBB",mainFun);
+    bb = BasicBlock::create(module,"whilBB",mainFun);
     auto retBB = BasicBlock::create(module,"retBB",mainFun);
+    auto cmpBB = BasicBlock::create(module,"cmpBB",mainFun);
+    builder->create_br(cmpBB);
+    builder->set_insert_point(cmpBB);
     auto iLoad = builder->create_load(iAlloca);
     auto icmp = builder->create_icmp_lt(iLoad,CONST_INT(10));
-    auto br = builder->create_cond_br(icmp,bb,retBB);
+    builder->create_cond_br(icmp,bb,retBB);
     builder->set_insert_point(bb);
     iLoad = builder->create_load(iAlloca);
     auto aLoad = builder->create_load(aAlloca);
@@ -34,7 +37,7 @@ int main() {
     auto adda = builder->create_iadd(iLoad,aLoad);
     builder->create_store(addi,iAlloca);
     builder->create_store(adda,aAlloca);
-    builder->create_br(bb);
+    builder->create_br(cmpBB);
     builder->set_insert_point(retBB);
     aLoad = builder->create_load(aAlloca);
     builder->create_ret(aLoad);
