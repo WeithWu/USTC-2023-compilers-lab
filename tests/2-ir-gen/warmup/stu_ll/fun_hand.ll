@@ -9,6 +9,6 @@ define i32 @callee(i32 %arg0) {
   ret i32 %5
 }
 define i32 @main() {
-  %0 = call i32 @callee(i32 110)
-  ret i32 %0
+  %1 = call i32 @callee(i32 110)
+  ret i32 %1
 }
