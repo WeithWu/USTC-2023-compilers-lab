@@ -76,7 +76,7 @@ Value* CminusfBuilder::visit(ASTFunDeclaration &node) {
         // TODO: You need to deal with params and store them in the scope.
     }
     node.compound_stmt->accept(*this);
-    if (builder->get_insert_block()->get_terminator() == nullptr) 
+    if (not builder->get_insert_block()->is_terminated())
     {
         if (context.func->get_return_type()->is_void_type())
             builder->create_void_ret();
@@ -98,15 +98,15 @@ Value* CminusfBuilder::visit(ASTParam &node) {
 Value* CminusfBuilder::visit(ASTCompoundStmt &node) {
     // TODO: This function is not complete.
     // You may need to add some code here
-    // to deal with complex statements. 
-    
+    // to deal with complex statements.
+
     for (auto &decl : node.local_declarations) {
         decl->accept(*this);
     }
 
     for (auto &stmt : node.statement_list) {
         stmt->accept(*this);
-        if (builder->get_insert_block()->get_terminator() == nullptr)
+        if (builder->get_insert_block()->is_terminated())
             break;
     }
     return nullptr;
