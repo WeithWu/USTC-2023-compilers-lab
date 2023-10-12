@@ -109,5 +109,11 @@ class CminusfBuilder : public ASTVisitor {
         // function that is being built
         Function *func = nullptr;
         // TODO: you should add more fields to store state
+        Value* Num = nullptr;
+        Type *ParaType = nullptr;
+        Value *expCmp = nullptr;
+        CminusType NumType = TYPE_VOID;
+        Value *varAddr = nullptr;
+        int INTEGER=0;
     } context;
 };
