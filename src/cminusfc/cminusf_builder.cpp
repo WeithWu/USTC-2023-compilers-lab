@@ -117,6 +117,7 @@ Value *CminusfBuilder::visit(ASTFunDeclaration &node)
     FunctionType *fun_type;
     Type *ret_type;
     std::vector<Type *> param_types;
+    std::vector<std::string> param_id;
     if (node.type == TYPE_INT)
         ret_type = INT32_T;
     else if (node.type == TYPE_FLOAT)
@@ -129,13 +130,15 @@ Value *CminusfBuilder::visit(ASTFunDeclaration &node)
         // TODO: Please accomplish param_types.
         param->accept(*this);
         param_types.push_back(context.ParaType);
+        param_id.push_back(context.param_id);
     }
 
     fun_type = FunctionType::get(ret_type, param_types);
-    auto func = Function::create(fun_type, node.id, module.get());
+    auto func = Function::create(fun_type, node.id, builder->get_module());
+    //
     scope.push(node.id, func);
     context.func = func;
-    auto funBB = BasicBlock::create(module.get(), "entry" + std::to_string(context.count++), func);
+    auto funBB = BasicBlock::create(builder->get_module(), "entry" + std::to_string(context.count++), func);
     builder->set_insert_point(funBB);
     scope.enter();
     std::vector<Value *> args;
@@ -148,7 +151,7 @@ Value *CminusfBuilder::visit(ASTFunDeclaration &node)
         // TODO: You need to deal with params and store them in the scope.
         auto argAlloca = builder->create_alloca(args[i]->get_type());
         builder->create_store(args[i], argAlloca);
-        scope.push(args[i]->get_name(), argAlloca); // not sure if name was set now
+        scope.push(param_id[i], argAlloca); // FIXME : not sure if name was set now
     }
     node.compound_stmt->accept(*this);
     if (not builder->get_insert_block()->is_terminated())
@@ -168,6 +171,7 @@ Value *CminusfBuilder::visit(ASTParam &node)
 {
     // TODO: This function is empty now.
     // Add some code here.
+    context.param_id=node.id;
     if (node.isarray)
     {
         if (node.type == TYPE_INT)
@@ -296,7 +300,7 @@ Value *CminusfBuilder::visit(ASTSelectionStmt &node)
     }
     else if (context.NumType == TYPE_FLOAT)
     {
-        cmp = builder->create_fcmp_gt(context.Num, CONST_INT(0));
+        cmp = builder->create_fcmp_gt(context.Num, CONST_FP(0));
     }
     if (node.if_statement)
     {
@@ -333,7 +337,7 @@ Value *CminusfBuilder::visit(ASTSelectionStmt &node)
         {
             RS->accept(*this);
         }
-        builder->create_br(nextBB);
+        if (not builder->get_insert_block()->is_terminated()) builder->create_br(nextBB);
         scope.exit();
     }
     if (node.else_statement)
@@ -365,7 +369,7 @@ Value *CminusfBuilder::visit(ASTSelectionStmt &node)
         {
             RS->accept(*this);
         }
-        builder->create_br(nextBB);
+        if (not builder->get_insert_block()->is_terminated()) builder->create_br(nextBB);
         scope.exit();
     }
     scope.exit();
@@ -404,7 +408,7 @@ Value *CminusfBuilder::visit(ASTIterationStmt &node)
     }
     else if (context.NumType == TYPE_FLOAT)
     {
-        cmp = builder->create_fcmp_gt(context.Num, CONST_INT(0));
+        cmp = builder->create_fcmp_gt(context.Num, CONST_FP(0));
     }
     builder->create_cond_br(cmp, whileBB, nextBB);
     scope.exit();
@@ -435,7 +439,7 @@ Value *CminusfBuilder::visit(ASTIterationStmt &node)
     {
         RS->accept(*this);
     }
-    builder->create_br(cmpBB);
+    if (not builder->get_insert_block()->is_terminated()) builder->create_br(cmpBB);
     scope.exit();
     scope.exit();
     builder->set_insert_point(nextBB);
@@ -467,6 +471,15 @@ Value *CminusfBuilder::visit(ASTReturnStmt &node)
                 SE->accept(*this);
             }
         }
+        Type* retType = context.func->get_return_type();
+        if(retType->is_float_type()&&context.NumType!=TYPE_FLOAT){
+            context.Num = builder->create_sitofp(context.Num,FLOAT_T);
+            context.NumType = TYPE_FLOAT;
+        }
+        else if(retType->is_int32_type()&&context.NumType!=TYPE_INT){
+            context.Num = builder->create_fptosi(context.Num,INT32_T);
+            context.NumType = TYPE_INT;
+        }
         builder->create_ret(context.Num);
     }
     scope.exit();
@@ -482,7 +495,10 @@ Value *CminusfBuilder::visit(ASTVar &node)
         context.varAddr = scope.find(node.id);
         if (context.varAddr->get_type()->get_pointer_element_type()->is_array_type())
         {
-            context.varAddr = builder->create_gep(context.varAddr, {CONST_INT(0), CONST_INT(0)});
+            context.varAddr = builder->create_gep(context.varAddr, {CONST_INT(0),CONST_INT(0)});
+        }
+        else if(context.varAddr->get_type()->get_pointer_element_type()->is_pointer_type()){
+            context.varAddr = builder->create_load(context.varAddr);
         }
         else
         {
@@ -535,8 +551,12 @@ Value *CminusfBuilder::visit(ASTVar &node)
             context.Num = builder->create_fptosi(context.Num, INT32_T);
             context.NumType = TYPE_INT;
         }
-
-        context.varAddr = builder->create_gep(baseAddr, {CONST_INT(0), context.Num});
+        if(baseAddr->get_type()->get_pointer_element_type()->is_array_type()){
+        context.varAddr = builder->create_gep(baseAddr, {CONST_INT(0), context.Num});}
+        else {
+            context.varAddr = builder->create_load(baseAddr);
+            context.varAddr = builder->create_gep(context.varAddr,{context.Num});
+        }
         if (context.varAddr->get_type()->get_pointer_element_type()->is_int32_type())
         {
             context.Num = builder->create_load(context.varAddr);
@@ -556,6 +576,7 @@ Value *CminusfBuilder::visit(ASTAssignExpression &node)
     // TODO: This function is empty now.
     // Add some code here.
     node.var->accept(*this);
+    Value* storeAddr = context.varAddr;
     ASTAssignExpression *AE = nullptr;
     ASTSimpleExpression *SE = nullptr;
     if (node.expression)
@@ -569,22 +590,22 @@ Value *CminusfBuilder::visit(ASTAssignExpression &node)
             SE->accept(*this);
         }
     }
-    Type *eleType = context.varAddr->get_type()->get_pointer_element_type();
+    Type *eleType = storeAddr->get_type()->get_pointer_element_type();
     if (eleType->is_int32_type() && context.NumType != TYPE_INT)
     {
         context.Num = builder->create_fptosi(context.Num, INT32_T);
         context.NumType = TYPE_INT;
-        builder->create_store(context.Num, context.varAddr);
+        builder->create_store(context.Num, storeAddr);
     }
     else if (eleType->is_float_type() && context.NumType != TYPE_FLOAT)
     {
         context.Num = builder->create_sitofp(context.Num, FLOAT_T);
         context.NumType = TYPE_FLOAT;
-        builder->create_store(context.Num, context.varAddr);
+        builder->create_store(context.Num, storeAddr);
     }
     else
     {
-        builder->create_store(context.Num, context.varAddr);
+        builder->create_store(context.Num, storeAddr);
     }
     return nullptr;
 }
@@ -932,6 +953,18 @@ Value *CminusfBuilder::visit(ASTCall &node)
         }
         i++;
     }
+    auto retType = func->get_return_type();
     context.Num = builder->create_call(func, fun_args);
+    if (retType->is_float_type())
+    {
+        context.NumType = TYPE_FLOAT;
+    }
+    else if (retType->is_int32_type())
+    {
+        context.NumType = TYPE_INT;
+    }
+    else {
+        context.NumType = TYPE_VOID;
+    }
     return nullptr;
 }

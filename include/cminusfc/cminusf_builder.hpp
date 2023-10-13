@@ -113,6 +113,7 @@ class CminusfBuilder : public ASTVisitor {
         Type *ParaType = nullptr;
         CminusType NumType = TYPE_VOID;
         Value *varAddr = nullptr;
+        std::string param_id; 
         int count =0;
         int INTEGER=0;
     } context;
