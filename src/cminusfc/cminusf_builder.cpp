@@ -215,34 +215,9 @@ Value *CminusfBuilder::visit(ASTCompoundStmt &node)
     {
         decl->accept(*this);
     }
-    ASTCompoundStmt *CS = nullptr;
-    ASTExpressionStmt *ES = nullptr;
-    ASTSelectionStmt *SS = nullptr;
-    ASTIterationStmt *IS = nullptr;
-    ASTReturnStmt *RS = nullptr;
     for (auto &stmt : node.statement_list)
     {
-        if (CS = dynamic_cast<ASTCompoundStmt *>(stmt.get()))
-        {
-            CS->accept(*this);
-        }
-        else if (ES = dynamic_cast<ASTExpressionStmt *>(stmt.get()))
-        {
-            ES->accept(*this);
-        }
-        else if (SS = dynamic_cast<ASTSelectionStmt *>(stmt.get()))
-        {
-            SS->accept(*this);
-        }
-        else if (IS = dynamic_cast<ASTIterationStmt *>(stmt.get()))
-        {
-            IS->accept(*this);
-        }
-        else if (RS = dynamic_cast<ASTReturnStmt *>(stmt.get()))
-        {
-            RS->accept(*this);
-        }
-
+        stmt->accept(*this);
         if (builder->get_insert_block()->is_terminated())
             break;
     }
@@ -255,18 +230,9 @@ Value *CminusfBuilder::visit(ASTExpressionStmt &node)
     // TODO: This function is empty now.
     // Add some code here.
     scope.enter();
-    ASTAssignExpression *AE = nullptr;
-    ASTSimpleExpression *SE = nullptr;
     if (node.expression)
     {
-        if (AE = dynamic_cast<ASTAssignExpression *>(node.expression.get()))
-        {
-            AE->accept(*this);
-        }
-        else if (SE = dynamic_cast<ASTSimpleExpression *>(node.expression.get()))
-        {
-            SE->accept(*this);
-        }
+        node.expression->accept(*this);
     }
     scope.exit();
     return nullptr;
@@ -281,18 +247,9 @@ Value *CminusfBuilder::visit(ASTSelectionStmt &node)
     BasicBlock *trueBB = nullptr;
     BasicBlock *falseBB = nullptr;
     Value *cmp = nullptr;
-    ASTAssignExpression *AE = nullptr;
-    ASTSimpleExpression *SE = nullptr;
     if (node.expression)
     {
-        if (AE = dynamic_cast<ASTAssignExpression *>(node.expression.get()))
-        {
-            AE->accept(*this);
-        }
-        else if (SE = dynamic_cast<ASTSimpleExpression *>(node.expression.get()))
-        {
-            SE->accept(*this);
-        }
+        node.expression->accept(*this);
     }
     if (context.NumType == TYPE_INT)
     {
@@ -312,31 +269,7 @@ Value *CminusfBuilder::visit(ASTSelectionStmt &node)
         builder->create_cond_br(cmp, trueBB, falseBB);
         builder->set_insert_point(trueBB);
         scope.enter();
-        ASTCompoundStmt *CS = nullptr;
-        ASTExpressionStmt *ES = nullptr;
-        ASTSelectionStmt *SS = nullptr;
-        ASTIterationStmt *IS = nullptr;
-        ASTReturnStmt *RS = nullptr;
-        if (CS = dynamic_cast<ASTCompoundStmt *>(node.if_statement.get()))
-        {
-            CS->accept(*this);
-        }
-        else if (ES = dynamic_cast<ASTExpressionStmt *>(node.if_statement.get()))
-        {
-            ES->accept(*this);
-        }
-        else if (SS = dynamic_cast<ASTSelectionStmt *>(node.if_statement.get()))
-        {
-            SS->accept(*this);
-        }
-        else if (IS = dynamic_cast<ASTIterationStmt *>(node.if_statement.get()))
-        {
-            IS->accept(*this);
-        }
-        else if (RS = dynamic_cast<ASTReturnStmt *>(node.if_statement.get()))
-        {
-            RS->accept(*this);
-        }
+        node.if_statement->accept(*this);
         if (not builder->get_insert_block()->is_terminated()) builder->create_br(nextBB);
         scope.exit();
     }
@@ -344,31 +277,7 @@ Value *CminusfBuilder::visit(ASTSelectionStmt &node)
     {
         builder->set_insert_point(falseBB);
         scope.enter();
-        ASTCompoundStmt *CS = nullptr;
-        ASTExpressionStmt *ES = nullptr;
-        ASTSelectionStmt *SS = nullptr;
-        ASTIterationStmt *IS = nullptr;
-        ASTReturnStmt *RS = nullptr;
-        if (CS = dynamic_cast<ASTCompoundStmt *>(node.else_statement.get()))
-        {
-            CS->accept(*this);
-        }
-        else if (ES = dynamic_cast<ASTExpressionStmt *>(node.else_statement.get()))
-        {
-            ES->accept(*this);
-        }
-        else if (SS = dynamic_cast<ASTSelectionStmt *>(node.else_statement.get()))
-        {
-            SS->accept(*this);
-        }
-        else if (IS = dynamic_cast<ASTIterationStmt *>(node.else_statement.get()))
-        {
-            IS->accept(*this);
-        }
-        else if (RS = dynamic_cast<ASTReturnStmt *>(node.else_statement.get()))
-        {
-            RS->accept(*this);
-        }
+        node.else_statement->accept(*this);
         if (not builder->get_insert_block()->is_terminated()) builder->create_br(nextBB);
         scope.exit();
     }
@@ -389,18 +298,9 @@ Value *CminusfBuilder::visit(ASTIterationStmt &node)
     builder->create_br(cmpBB);
     builder->set_insert_point(cmpBB);
     scope.enter();
-    ASTAssignExpression *AE = nullptr;
-    ASTSimpleExpression *SE = nullptr;
     if (node.expression)
     {
-        if (AE = dynamic_cast<ASTAssignExpression *>(node.expression.get()))
-        {
-            AE->accept(*this);
-        }
-        else if (SE = dynamic_cast<ASTSimpleExpression *>(node.expression.get()))
-        {
-            SE->accept(*this);
-        }
+        node.expression->accept(*this);
     }
     if (context.NumType == TYPE_INT)
     {
@@ -414,31 +314,7 @@ Value *CminusfBuilder::visit(ASTIterationStmt &node)
     scope.exit();
     builder->set_insert_point(whileBB);
     scope.enter();
-    ASTCompoundStmt *CS = nullptr;
-    ASTExpressionStmt *ES = nullptr;
-    ASTSelectionStmt *SS = nullptr;
-    ASTIterationStmt *IS = nullptr;
-    ASTReturnStmt *RS = nullptr;
-    if (CS = dynamic_cast<ASTCompoundStmt *>(node.statement.get()))
-    {
-        CS->accept(*this);
-    }
-    else if (ES = dynamic_cast<ASTExpressionStmt *>(node.statement.get()))
-    {
-        ES->accept(*this);
-    }
-    else if (SS = dynamic_cast<ASTSelectionStmt *>(node.statement.get()))
-    {
-        SS->accept(*this);
-    }
-    else if (IS = dynamic_cast<ASTIterationStmt *>(node.statement.get()))
-    {
-        IS->accept(*this);
-    }
-    else if (RS = dynamic_cast<ASTReturnStmt *>(node.statement.get()))
-    {
-        RS->accept(*this);
-    }
+    node.statement->accept(*this);
     if (not builder->get_insert_block()->is_terminated()) builder->create_br(cmpBB);
     scope.exit();
     scope.exit();
@@ -458,18 +334,9 @@ Value *CminusfBuilder::visit(ASTReturnStmt &node)
     {
         // TODO: The given code is incomplete.
         // You need to solve other return cases (e.g. return an integer).
-        ASTAssignExpression *AE = nullptr;
-        ASTSimpleExpression *SE = nullptr;
         if (node.expression)
         {
-            if (AE = dynamic_cast<ASTAssignExpression *>(node.expression.get()))
-            {
-                AE->accept(*this);
-            }
-            else if (SE = dynamic_cast<ASTSimpleExpression *>(node.expression.get()))
-            {
-                SE->accept(*this);
-            }
+            node.expression->accept(*this);
         }
         Type* retType = context.func->get_return_type();
         if(retType->is_float_type()&&context.NumType!=TYPE_FLOAT){
@@ -516,18 +383,9 @@ Value *CminusfBuilder::visit(ASTVar &node)
     }
     else
     {
-        ASTAssignExpression *AE = nullptr;
-        ASTSimpleExpression *SE = nullptr;
         if (node.expression)
         {
-            if (AE = dynamic_cast<ASTAssignExpression *>(node.expression.get()))
-            {
-                AE->accept(*this);
-            }
-            else if (SE = dynamic_cast<ASTSimpleExpression *>(node.expression.get()))
-            {
-                SE->accept(*this);
-            }
+            node.expression->accept(*this);
         }
         Value *baseAddr = scope.find(node.id);
         auto nextBB = BasicBlock::create(builder->get_module(), "nextBB" + std::to_string(context.count++), context.func);
@@ -577,18 +435,9 @@ Value *CminusfBuilder::visit(ASTAssignExpression &node)
     // Add some code here.
     node.var->accept(*this);
     Value* storeAddr = context.varAddr;
-    ASTAssignExpression *AE = nullptr;
-    ASTSimpleExpression *SE = nullptr;
     if (node.expression)
     {
-        if (AE = dynamic_cast<ASTAssignExpression *>(node.expression.get()))
-        {
-            AE->accept(*this);
-        }
-        else if (SE = dynamic_cast<ASTSimpleExpression *>(node.expression.get()))
-        {
-            SE->accept(*this);
-        }
+        node.expression->accept(*this);
     }
     Type *eleType = storeAddr->get_type()->get_pointer_element_type();
     if (eleType->is_int32_type() && context.NumType != TYPE_INT)
@@ -885,26 +734,7 @@ Value *CminusfBuilder::visit(ASTTerm &node)
     }
     else
     {
-        ASTNum *Num = nullptr;
-        ASTExpression *Exp = nullptr;
-        ASTVar *Var = nullptr;
-        ASTCall *Call = nullptr;
-        if (Num = dynamic_cast<ASTNum *>(node.factor.get()))
-        {
-            Num->accept(*this);
-        }
-        else if (Exp = dynamic_cast<ASTExpression *>(node.factor.get()))
-        {
-            Exp->accept(*this);
-        }
-        else if (Var = dynamic_cast<ASTVar *>(node.factor.get()))
-        {
-            Var->accept(*this);
-        }
-        else if (Call = dynamic_cast<ASTCall *>(node.factor.get()))
-        {
-            Call->accept(*this);
-        }
+        node.factor->accept(*this);
     }
     return nullptr;
 }
@@ -919,16 +749,7 @@ Value *CminusfBuilder::visit(ASTCall &node)
     int i = 0;
     for (auto &arg : node.args)
     {
-        ASTAssignExpression *AE = nullptr;
-        ASTSimpleExpression *SE = nullptr;
-        if (AE = dynamic_cast<ASTAssignExpression *>(arg.get()))
-        {
-            AE->accept(*this);
-        }
-        else if (SE = dynamic_cast<ASTSimpleExpression *>(arg.get()))
-        {
-            SE->accept(*this);
-        }
+        arg->accept(*this);
         argType = func->get_function_type()->get_param_type(i);
         if (argType->is_pointer_type())
         {
