@@ -1,0 +1,47 @@
+int seed;
+
+int randomLCG(void) {
+    seed = seed * 1103515245 + 12345;
+    return seed;
+}
+
+int randBin(void) {
+    if (randomLCG() > 0)
+        return 1;
+    else
+        return 0;
+}
+
+/* random walk */
+int returnToZeroSteps(void) {
+    int x;
+    int steps;
+
+    x = 0;
+    steps = 0;
+
+    while (steps < 20) {
+        if (randBin())
+            x = x + 1;
+        else
+            x = x - 1;
+
+        steps = steps + 1;
+        if (x == 0)
+            return steps;
+    }
+    return 20;
+}
+
+int main(void) {
+    int i;
+    i = 0;
+
+    seed = 3407;
+
+    while (i < 20) {
+        output(returnToZeroSteps());
+        i = i + 1;
+    }
+    return 0;
+}

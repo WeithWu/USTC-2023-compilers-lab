@@ -213,6 +213,7 @@ Value *CminusfBuilder::visit(ASTCompoundStmt &node)
     scope.enter();
     for (auto &decl : node.local_declarations)
     {
+
         decl->accept(*this);
     }
     for (auto &stmt : node.statement_list)

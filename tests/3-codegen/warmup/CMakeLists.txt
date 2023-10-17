@@ -1,0 +1,59 @@
+add_executable(
+    stu_assign_codegen
+    stu_cpp/assign_codegen.cpp
+)
+target_link_libraries(
+    stu_assign_codegen
+    IR_lib
+    codegen
+)
+
+add_executable(
+    stu_function_codegen
+    stu_cpp/function_codegen.cpp
+)
+target_link_libraries(
+    stu_function_codegen
+    IR_lib
+    codegen
+)
+
+add_executable(
+    stu_icmp_codegen
+    stu_cpp/icmp_codegen.cpp
+)
+target_link_libraries(
+    stu_icmp_codegen
+    IR_lib
+    codegen
+)
+
+add_executable(
+    stu_fcmp_codegen
+    stu_cpp/fcmp_codegen.cpp
+)
+target_link_libraries(
+    stu_fcmp_codegen
+    IR_lib
+    codegen
+)
+
+add_executable(
+    stu_float_codegen
+    stu_cpp/float_codegen.cpp
+)
+target_link_libraries(
+    stu_float_codegen
+    IR_lib
+    codegen
+)
+
+add_executable(
+    stu_global_codegen
+    stu_cpp/global_codegen.cpp
+)
+target_link_libraries(
+    stu_global_codegen
+    IR_lib
+    codegen
+)
