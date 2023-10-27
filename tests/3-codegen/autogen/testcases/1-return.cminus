@@ -1,0 +1,4 @@
+int main(void) {
+    output(111);
+    return 111;
+}

@@ -1,0 +1,15 @@
+int main(void) {
+    int a[10];
+    int i;
+
+    i = 0;
+    a[0] = 11;
+    a[4] = 22;
+    a[9] = 33;
+
+    output(a[0]);
+    output(a[4]);
+    output(a[9]);
+
+    return 0;
+}

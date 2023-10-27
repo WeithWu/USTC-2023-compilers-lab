@@ -1,3 +1,4 @@
+#include "CodeGen.hpp"
 #include "Module.hpp"
 #include "cminusf_builder.hpp"
 
@@ -15,6 +16,7 @@ struct Config {
     std::filesystem::path output_file;
 
     bool emitllvm{false};
+    bool emitasm{false};
 
     Config(int argc, char **argv) : argc(argc), argv(argv) {
         parse_cmd_line();
@@ -29,7 +31,7 @@ struct Config {
     void check();
     // print helper infomation and exit
     void print_help() const;
-    void print_err(const string& msg) const;
+    void print_err(const string &msg) const;
 };
 
 int main(int argc, char **argv) {
@@ -50,6 +52,10 @@ int main(int argc, char **argv) {
         output_stream << "; ModuleID = 'cminus'\n";
         output_stream << "source_filename = " << abs_path << "\n\n";
         output_stream << m->print();
+    } else if (config.emitasm) {
+        CodeGen codegen(m.get());
+        codegen.run();
+        output_stream << codegen.print();
     }
 
     return 0;
@@ -69,6 +75,8 @@ void Config::parse_cmd_line() {
             }
         } else if (argv[i] == "-emit-llvm"s) {
             emitllvm = true;
+        } else if (argv[i] == "-S"s) {
+            emitasm = true;
         } else {
             if (input_file.empty()) {
                 input_file = argv[i];
@@ -88,11 +96,18 @@ void Config::check() {
     if (input_file.extension() != ".cminus") {
         print_err("file format not recognized");
     }
-
+    if (emitllvm and emitasm) {
+        print_err("emit llvm and emit asm both set");
+    }
+    if (not emitllvm and not emitasm) {
+        print_err("not supported: generate executable file directly");
+    }
     if (output_file.empty()) {
         output_file = input_file.stem();
         if (emitllvm) {
             output_file.replace_extension(".ll");
+        } else if (emitasm) {
+            output_file.replace_extension(".s");
         }
     }
 }
@@ -105,7 +120,7 @@ void Config::print_help() const {
     exit(0);
 }
 
-void Config::print_err(const string& msg) const {
+void Config::print_err(const string &msg) const {
     std::cout << exe_name << ": " << msg << std::endl;
     exit(-1);
 }
