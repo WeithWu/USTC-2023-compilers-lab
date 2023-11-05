@@ -68,7 +68,8 @@ void translate_main(CodeGen *codegen) {
     // TODO: 获得 %op0 的值, 然后进行转换, 最后将结果写入 %op1
     // 思考: 怎么转换? 需不需要显式地使用某些指令转换?
     codegen->append_inst("ld.w",{"$t0","$fp",std::to_string(offset_map["%op0"])});
-    codegen->append_inst("st.w",{"$t0","$fp",std::to_string(offset_map["%op1"])});
+    codegen->append_inst("bstrpick.w $t1, $t0, 0, 0");
+    codegen->append_inst("st.w",{"$t1","$fp",std::to_string(offset_map["%op1"])});
 
     /* %op2 = icmp ne i32 %op1, 0 */
     codegen->append_inst("%op2 = icmp ne i32 %op1, 0", ASMInstruction::Comment);
