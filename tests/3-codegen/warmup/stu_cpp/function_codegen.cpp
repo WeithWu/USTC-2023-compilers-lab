@@ -47,7 +47,7 @@ void translate_callee(CodeGen *codegen) {
     codegen->append_inst("addi.d $sp, $sp, -48");
 
     // 为参数分配空间
-    offset_map["%arg0"] = ; // TODO: 请填空
+    offset_map["%arg0"] = -20; // TODO: 请填空
     codegen->append_inst("st.w",
                          {"$a0", "$fp", std::to_string(offset_map["%arg0"])});
 
@@ -58,8 +58,8 @@ void translate_callee(CodeGen *codegen) {
     // 在汇编中写入注释, 方便 debug
     codegen->append_inst("%op1 = alloca i32", ASMInstruction::Comment);
     // 将 alloca 的地址写入 %op1 对应的内存空间中
-    offset_map["%op1"] = ;  // TODO: 请填空
-    offset_map["*%op1"] = ; // TODO: 请填空
+    offset_map["%op1"] = -28;  // TODO: 请填空
+    offset_map["*%op1"] = -32; // TODO: 请填空
     codegen->append_inst("addi.d",
                          {"$t0", "$fp", std::to_string(offset_map["*%op1"])});
     codegen->append_inst("st.d",
@@ -77,7 +77,7 @@ void translate_callee(CodeGen *codegen) {
     /* %op2 = load i32, i32* %op1 */
     codegen->append_inst("%op2 = load i32, i32* %op1", ASMInstruction::Comment);
     // 将 %op1 对应的内存空间的值写入 %op2 对应的内存空间中
-    offset_map["%op2"] = ; // TODO: 请填空
+    offset_map["%op2"] = -36; // TODO: 请填空
     codegen->append_inst("ld.d",
                          {"$t0", "$fp", std::to_string(offset_map["%op1"])});
     codegen->append_inst("ld.w $t1, $t0, 0");
@@ -87,7 +87,7 @@ void translate_callee(CodeGen *codegen) {
     /* %op3 = mul i32 3, %op2 */
     codegen->append_inst("%op3 = mul i32 3, %op2", ASMInstruction::Comment);
     // 将 %op2 的值乘以 3, 并将结果写入 %op3 对应的内存空间中
-    offset_map["%op3"] = ; // TODO: 请填空
+    offset_map["%op3"] = -40; // TODO: 请填空
     codegen->append_inst("ld.w",
                          {"$t0", "$fp", std::to_string(offset_map["%op2"])});
     codegen->append_inst("addi.w $t1, $zero, 3");
@@ -142,11 +142,11 @@ void translate_main(CodeGen *codegen) {
     // 在汇编中写入注释, 方便 debug
     codegen->append_inst("%op0 = call i32 @callee(i32 110)",
                          ASMInstruction::Comment);
-    offset_map["%op0"] = ; // TODO: 请填空
+    offset_map["%op0"] = -20; // TODO: 请填空
     // TODO: 将参数写入参数寄存器
-    codegen->append_inst("");
+    codegen->append_inst("addi.w $a0, $zero, 110");
     // TODO: 调用 callee 函数
-    codegen->append_inst("");
+    codegen->append_inst("bl callee");
     // 将返回值写入 %op0 对应的内存空间中
     codegen->append_inst("st.w",
                          {"$a0", "$fp", std::to_string(offset_map["%op0"])});

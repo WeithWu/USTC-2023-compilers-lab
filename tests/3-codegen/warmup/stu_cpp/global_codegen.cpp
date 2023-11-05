@@ -73,16 +73,17 @@ void translate_main(CodeGen *codegen) {
     codegen->append_inst("store i32 10, i32* @a", ASMInstruction::Comment);
     // 将 10 写入 a 对应的内存空间中
     // TODO: 获得 a 的地址
-    codegen->append_inst("");
+    codegen->append_inst("la.local $t0, a");
     // TODO: 将 10 写入 a 对应的内存空间中
-    codegen->append_inst("");
+    codegen->append_inst("addi.w $t1, $zero, 10");
+    codegen->append_inst("st.w",{"$t1","$t0",std::to_string(0)});
 
     /* %op0 = load i32, i32* @a */
     codegen->append_inst("%op0 = load i32, i32* @a", ASMInstruction::Comment);
     // 将 a 的值写入 %op0 对应的内存空间中
-    offset_map["%op0"] = ; // TODO: 请填空
+    offset_map["%op0"] = -20; // TODO: 请填空
     // TODO: 获得 a 的地址, 并存储在 $t0 中
-    codegen->append_inst("");
+    codegen->append_inst("la.local $t0, a");
     // 将 a 的值写入 %op0 对应的内存空间中
     codegen->append_inst("ld.w $t1, $t0, 0");
     codegen->append_inst("st.w",

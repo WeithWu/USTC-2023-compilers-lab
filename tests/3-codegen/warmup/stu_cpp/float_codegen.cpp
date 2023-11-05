@@ -51,8 +51,8 @@ void translate_main(CodeGen *codegen) {
     // 在汇编中写入注释, 方便 debug
     codegen->append_inst("%op0 = alloca float", ASMInstruction::Comment);
     // 将浮点数的地址写入 %op0 对应的内存空间中
-    offset_map["%op0"] = ;  // TODO: 请填空
-    offset_map["*%op0"] = ; // TODO: 请填空
+    offset_map["%op0"] = -24;  // TODO: 请填空
+    offset_map["*%op0"] = -32; // TODO: 请填空
     codegen->append_inst("addi.d",
                          {"$t0", "$fp", std::to_string(offset_map["*%op0"])});
     codegen->append_inst("st.d",
@@ -66,29 +66,35 @@ void translate_main(CodeGen *codegen) {
     codegen->append_inst("ld.d",
                          {"$t0", "$fp", std::to_string(offset_map["%op0"])});
     // TODO: 将 0x4048f5c3 加载到通用寄存器或者浮点寄存器中
-    codegen->append_inst("");
+    codegen->append_inst("lu12i.w $t1,0x4048f");
+    codegen->append_inst("ori $t1, $t1, 0x5c3");
+
     // TODO: 将通用寄存器或者浮点寄存器中的值写入 %op0 对应的内存空间中
-    codegen->append_inst("");
+    codegen->append_inst("st.w",{"$t1","$fp",std::to_string(offset_map["%op0"])});
 
     /* %op1 = load float, float* %op0 */
     codegen->append_inst("%op1 = load float, float* %op0",
                          ASMInstruction::Comment);
     // TODO: 先获得 %op0 的值, 然后获得 %op0 指向的空间的值, 最后将这个值写入
     // %op1 对应的内存空间中
-    offset_map["%op1"] = ; // TODO: 请填空
-    codegen->append_inst("");
+    offset_map["%op1"] = -40; // TODO: 请填空
+    codegen->append_inst("ld.d",{"$t0","$fp",std::to_string(offset_map["%op0"])});
+    codegen->append_inst("ld.d",{"$t0","$t0",std::to_string(0)});
+    codegen->append_inst("st.d",{"$t0","$fp",std::to_string(offset_map["%op1"])});
 
     /* %op2 = fptosi float %op1 to i32 */
     codegen->append_inst("%op2 = fptosi float %op1 to i32",
                          ASMInstruction::Comment);
     // TODO: 使用 ftintrz.w.s 指令进行转换, 并将结果写入 %op2 对应的内存空间中
-    offset_map["%op2"] = ; // TODO: 请填空
-    codegen->append_inst("");
+    offset_map["%op2"] = -48; // TODO: 请填空
+    codegen->append_inst("fld.s" ,{"$ft0","$fp", std::to_string(offset_map["%op1"]) });
+    codegen->append_inst("ftintrz.w.s $ft1, $ft0");
+    codegen->append_inst("fst.s",{"$ft1","$fp",std::to_string(offset_map["%op2"])});
 
     /* ret i32 %op2 */
     codegen->append_inst("ret i32 %op2", ASMInstruction::Comment);
     // TODO: 将 %op2 的值写入 $a0 中
-    codegen->append_inst("");
+    codegen->append_inst("ld.w",{"$a0","$fp",std::to_string(offset_map["%op2"])});
     codegen->append_inst("b main_exit");
 
     /* main 函数的 Epilogue (收尾) */
