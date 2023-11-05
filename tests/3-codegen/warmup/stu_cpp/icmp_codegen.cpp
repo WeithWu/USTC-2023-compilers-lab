@@ -79,7 +79,8 @@ void translate_main(CodeGen *codegen) {
     // 思考: 如何比较? 能否不使用跳转指令计算结果?
     // 提示: 尝试使用 xor/xori 和 slt/sltu/slti/sltui 计算比较结果
     codegen->append_inst("ld.w",{"$t0","$fp",std::to_string(offset_map["%op1"])});
-    codegen->append_inst("xori $t1, $t0,0");
+    codegen->append_inst("bstrpick.d $t2, $t0, 0, 0");
+    codegen->append_inst("xori $t1, $t2,0");
     codegen->append_inst("slt $t0,$zero,$t1");
     codegen->append_inst("st.w",{"$t0","$fp",std::to_string(offset_map["%op2"])});
 
@@ -90,8 +91,8 @@ void translate_main(CodeGen *codegen) {
     // 提示: 汇编中对应的标签分别为 .main_label3 和 .main_label4
     codegen->append_inst("ld.w",{"$t0","$fp",std::to_string(offset_map["%op2"])});
     codegen->append_inst("bstrpick.d $t1, $t0, 0, 0");
-    codegen->append_inst("beqz $t1,.main_label3");
-    codegen->append_inst("b .main_label4");
+    codegen->append_inst("beqz $t1,.main_label4");
+    codegen->append_inst("b .main_label3");
     /* label3: */
     codegen->append_inst(".main_label3", ASMInstruction::Label);
 
