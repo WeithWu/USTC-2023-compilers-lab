@@ -63,10 +63,10 @@ void translate_main(CodeGen *codegen) {
     // TODO: 使用 fcmp.slt.s 进行比较, 比较结果在浮点标志寄存器中, 你需要思考
     // 如何将浮点标志寄存器中的值写入内存. 提示: 尝试使用 bcnez 指令
     codegen->append_inst("fcmp.slt.s $fcc0, $ft0, $ft1");
-    codegen->append_inst("bcnez $fcc0,3");
+    codegen->append_inst("bcnez $fcc0,12");
     codegen->append_inst("addi.w $t0, $zero, 0");
     codegen->append_inst("st.w",{"$t0","$fp",std::to_string(offset_map["%op0"])});
-    codegen->append_inst("b 2");
+    codegen->append_inst("b 8");
     codegen->append_inst("addi.w $t0, $zero, 1");
     codegen->append_inst("st.w",{"$t0","$fp",std::to_string(offset_map["%op0"])});
     /* %op1 = zext i1 %op0 to i32 */
@@ -98,7 +98,8 @@ void translate_main(CodeGen *codegen) {
     // TODO: 获得 %op2 的值, 并根据 %op2 的值跳转到 label3 或者 label4
     // 提示: 汇编中对应的标签分别为 .main_label3 和 .main_label4
     codegen->append_inst("ld.w",{"$t0","$fp",std::to_string(offset_map["%op2"])});
-    codegen->append_inst("beqz $t0,.main_label3");
+    codegen->append_inst("bstrpick.d $t1, $t0, 0, 0");
+    codegen->append_inst("beqz $t1,.main_label3");
     codegen->append_inst("b .main_label4");
 
     /* label3: */
