@@ -68,7 +68,8 @@ void CodeGen::load_large_int64(int64_t val, const Reg &reg) {
     int32_t high_32_low_20 = (high_32 << 12) >> 12; // si20
     int32_t high_32_high_12 = high_32 >> 20;        // si12
     append_inst(LU32I_D, {reg.print(), std::to_string(high_32_low_20)});
-    append_inst(LU52I_D, {reg.print(), std::to_string(high_32_high_12)});
+    append_inst(LU52I_D,
+                {reg.print(), reg.print(), std::to_string(high_32_high_12)});
 }
 
 void CodeGen::load_from_stack_to_greg(Value *val, const Reg &reg) {
