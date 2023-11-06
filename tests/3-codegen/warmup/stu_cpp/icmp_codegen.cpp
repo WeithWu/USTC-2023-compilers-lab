@@ -49,9 +49,7 @@ void translate_main(CodeGen *codegen) {
 
     /* %op0 = icmp sgt i32 5, 1 */
     // 在汇编中写入注释, 方便 debug
-    codegen->append_inst(
-        "%op0 = fcmp ugt float 0x4016000000000000, 0x3ff0000000000000",
-        ASMInstruction::Comment);
+    codegen->append_inst("%op0 = icmp sgt i32 5, 1", ASMInstruction::Comment);
     // 将比较结果写入 %op0 对应的内存空间中
     offset_map["%op0"] = ; // TODO: 请填空
     codegen->append_inst("addi.w $t0, $zero, 5");
