@@ -41,8 +41,8 @@ void translate_main(CodeGen *codegen) {
     codegen->append_inst("st.d $fp, $sp, -16");
     // 设置新的 fp
     codegen->append_inst("addi.d $fp, $sp, 0");
-    // 为栈帧分配空间. 思考: 为什么是 48 字节?
-    codegen->append_inst("addi.d $sp, $sp, -48");
+    // 为栈帧分配空间. 思考: 为什么是 32 字节?
+    codegen->append_inst("addi.d $sp, $sp, -32");
 
     /* main 函数的 label_entry */
     codegen->append_inst(".main_label_entry", ASMInstruction::Label);
@@ -106,7 +106,7 @@ void translate_main(CodeGen *codegen) {
     /* main 函数的 Epilogue (收尾) */
     codegen->append_inst("main_exit", ASMInstruction::Label);
     // 释放栈帧空间
-    codegen->append_inst("addi.d $sp, $sp, 48");
+    codegen->append_inst("addi.d $sp, $sp, 32");
     // 恢复 ra
     codegen->append_inst("ld.d $ra, $sp, -8");
     // 恢复 fp
