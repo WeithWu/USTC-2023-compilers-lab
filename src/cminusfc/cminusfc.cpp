@@ -1,5 +1,8 @@
 #include "CodeGen.hpp"
+#include "DeadCode.hpp"
+#include "Mem2Reg.hpp"
 #include "Module.hpp"
+#include "PassManager.hpp"
 #include "cminusf_builder.hpp"
 
 #include <filesystem>
@@ -17,6 +20,7 @@ struct Config {
 
     bool emitllvm{false};
     bool emitasm{false};
+    bool mem2reg{false};
 
     Config(int argc, char **argv) : argc(argc), argv(argv) {
         parse_cmd_line();
@@ -45,6 +49,14 @@ int main(int argc, char **argv) {
         ast.run_visitor(builder);
         m = builder.getModule();
     }
+
+    PassManager PM(m.get());
+
+    if (config.mem2reg) {
+        PM.add_pass<Mem2Reg>();
+        PM.add_pass<DeadCode>();
+    }
+    PM.run();
 
     std::ofstream output_stream(config.output_file);
     if (config.emitllvm) {
@@ -77,6 +89,8 @@ void Config::parse_cmd_line() {
             emitllvm = true;
         } else if (argv[i] == "-S"s) {
             emitasm = true;
+        } else if (argv[i] == "-mem2reg"s) {
+            mem2reg = true;
         } else {
             if (input_file.empty()) {
                 input_file = argv[i];

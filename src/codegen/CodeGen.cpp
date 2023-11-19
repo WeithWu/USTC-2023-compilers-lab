@@ -407,8 +407,7 @@ void CodeGen::run() {
                         gen_fcmp();
                         break;
                     case Instruction::phi:
-                        throw unreachable_error{
-                            "There is no requirement for phi in lab3!"};
+                        throw not_implemented_error{"need to handle phi!"};
                         break;
                     case Instruction::call:
                         gen_call();
