@@ -41,17 +41,15 @@ void translate_main(CodeGen *codegen) {
     codegen->append_inst("st.d $fp, $sp, -16");
     // 设置新的 fp
     codegen->append_inst("addi.d $fp, $sp, 0");
-    // 为栈帧分配空间. 思考: 为什么是 48 字节?
-    codegen->append_inst("addi.d $sp, $sp, -48");
+    // 为栈帧分配空间. 思考: 为什么是 32 字节?
+    codegen->append_inst("addi.d $sp, $sp, -32");
 
     /* main 函数的 label_entry */
     codegen->append_inst(".main_label_entry", ASMInstruction::Label);
 
     /* %op0 = icmp sgt i32 5, 1 */
     // 在汇编中写入注释, 方便 debug
-    codegen->append_inst(
-        "%op0 = fcmp ugt float 0x4016000000000000, 0x3ff0000000000000",
-        ASMInstruction::Comment);
+    codegen->append_inst("%op0 = icmp sgt i32 5, 1", ASMInstruction::Comment);
     // 将比较结果写入 %op0 对应的内存空间中
     offset_map["%op0"] = -20; // TODO: 请填空
     codegen->append_inst("addi.w $t0, $zero, 5");
@@ -114,7 +112,7 @@ void translate_main(CodeGen *codegen) {
     /* main 函数的 Epilogue (收尾) */
     codegen->append_inst("main_exit", ASMInstruction::Label);
     // 释放栈帧空间
-    codegen->append_inst("addi.d $sp, $sp, 48");
+    codegen->append_inst("addi.d $sp, $sp, 32");
     // 恢复 ra
     codegen->append_inst("ld.d $ra, $sp, -8");
     // 恢复 fp

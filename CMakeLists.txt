@@ -40,6 +40,7 @@ INCLUDE_DIRECTORIES(
     include/common
     include/lightir
     include/codegen
+    include/passes/
     ${LLVM_INCLUDE_DIRS}
 )
 

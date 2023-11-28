@@ -11,6 +11,7 @@ target_link_libraries(
     syntax
     codegen
     stdc++fs
+    opt_lib
 )
 
 install(

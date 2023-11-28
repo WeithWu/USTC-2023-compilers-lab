@@ -1,0 +1,18 @@
+/* float function call */
+
+float mod(float x, float y) {
+    int div;
+    div = x / y;
+    return x - div * y;
+}
+
+int main(void) {
+    float a;
+    float b;
+
+    a = 11.2;
+    b = 2.2;
+
+    outputFloat(mod(a, b));
+    return 0;
+}

@@ -1,0 +1,19 @@
+int main(void) {
+    float a;
+    float b;
+    float c;
+
+    a = 1.1;
+    b = 1.5;
+    c = 1.2;
+
+    outputFloat(a * b + c);
+    return 0;
+}
+
+/*
+    用 gcc 编译此文件生成汇编代码时，命令为  gcc -include io.h -S 10-float.c
+    其中 io.h 位于 src/io/io.h，
+
+    也可以在本文件开头加上    void outputFloat(float x);
+*/

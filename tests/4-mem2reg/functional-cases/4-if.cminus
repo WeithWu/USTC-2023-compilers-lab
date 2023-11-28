@@ -1,0 +1,23 @@
+int main(void) {
+    int a;
+    int b;
+    int c;
+
+    a = 11;
+    b = 22;
+    c = 33;
+
+    /* max value */
+    if (a > b) {
+        if (a > c)
+            output(a);
+        else
+            output(c);
+    } else {
+        if (c < b)
+            output(b);
+        else
+            output(c);
+    }
+    return 0;
+}
