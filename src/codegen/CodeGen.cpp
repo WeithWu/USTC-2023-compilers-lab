@@ -241,6 +241,48 @@ void CodeGen::gen_br() {
         load_to_greg(branchInst->get_operand(0),Reg::t(0));
         auto *truebb = static_cast<BasicBlock*>(branchInst->get_operand(1));
         auto *falsebb = static_cast<BasicBlock*>(branchInst->get_operand(2));
+        for(auto &instr:truebb->get_instructions()){
+            if(instr.is_phi()){
+                auto *phiInst = static_cast<PhiInst*>(&instr);
+                for (int i=1;i<phiInst->get_operands().size();i=i+2){
+                    if(static_cast<BasicBlock*>(phiInst->get_operand(i))==context.inst->get_parent()){
+                        if(phiInst->get_operand(i-1)->get_type()->is_float_type()){
+                            load_to_freg(phiInst->get_operand(i-1),FReg::ft(8));
+                            store_from_freg(phiInst,FReg::ft(8));
+                        }
+                        else {
+                            load_to_greg(phiInst->get_operand(i-1),Reg::t(8));
+                            store_from_greg(phiInst,Reg::t(8));
+                        }
+                        break;
+                    }
+                }
+            }
+            else {
+                break;
+            }
+        }
+        for(auto &instr:falsebb->get_instructions()){
+            if(instr.is_phi()){
+                auto *phiInst = static_cast<PhiInst*>(&instr);
+                for (int i=1;i<phiInst->get_operands().size();i=i+2){
+                    if(static_cast<BasicBlock*>(phiInst->get_operand(i))==context.inst->get_parent()){
+                        if(phiInst->get_operand(i-1)->get_type()->is_float_type()){
+                            load_to_freg(phiInst->get_operand(i-1),FReg::ft(8));
+                            store_from_freg(phiInst,FReg::ft(8));
+                        }
+                        else {
+                            load_to_greg(phiInst->get_operand(i-1),Reg::t(8));
+                            store_from_greg(phiInst,Reg::t(8));
+                        }
+                        break;
+                    }
+                }
+            }
+            else {
+                break;
+            }
+        }
         append_inst("bstrpick.d $t1, $t0, 0, 0");
         append_inst("bnez $t1, "+ label_name(truebb));
         append_inst("b "+ label_name(falsebb));
@@ -248,6 +290,27 @@ void CodeGen::gen_br() {
         
     } else {
         auto *branchbb = static_cast<BasicBlock *>(branchInst->get_operand(0));
+        for(auto &instr:branchbb->get_instructions()){
+            if(instr.is_phi()){
+                auto *phiInst = static_cast<PhiInst*>(&instr);
+                for (int i=1;i<phiInst->get_operands().size();i=i+2){
+                    if(static_cast<BasicBlock*>(phiInst->get_operand(i))==context.inst->get_parent()){
+                        if(phiInst->get_operand(i-1)->get_type()->is_float_type()){
+                            load_to_freg(phiInst->get_operand(i-1),FReg::ft(8));
+                            store_from_freg(phiInst,FReg::ft(8));
+                        }
+                        else {
+                            load_to_greg(phiInst->get_operand(i-1),Reg::t(8));
+                            store_from_greg(phiInst,Reg::t(8));
+                        }
+                        break;
+                    }
+                }
+            }
+            else {
+                break;
+            }
+        }
         append_inst("b " + label_name(branchbb));
     }
    // throw not_implemented_error{__FUNCTION__};
@@ -632,7 +695,7 @@ void CodeGen::run() {
                         gen_fcmp();
                         break;
                     case Instruction::phi:
-                        throw not_implemented_error{"need to handle phi!"};
+                        //throw not_implemented_error{"need to handle phi!"};
                         break;
                     case Instruction::call:
                         gen_call();

@@ -26,7 +26,11 @@ class Dominators : public Pass {
     void create_idom(Function *f);
     void create_dominance_frontier(Function *f);
     void create_dom_tree_succ(Function *f);
-
+    
+    BasicBlock* intersect(BasicBlock*b1,BasicBlock*b2);
+    bool cmp_bb_slt(BasicBlock* b1,BasicBlock* b2);
+    bool cmp_bb_eq(BasicBlock*b1,BasicBlock*b2);
+    BasicBlock* first_processed_pred(BasicBlock* bb,BBSet& processed);
     // TODO 补充需要的函数
 
     std::map<BasicBlock *, BasicBlock *> idom_{};  // 直接支配

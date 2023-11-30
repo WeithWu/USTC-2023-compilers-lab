@@ -11,7 +11,9 @@ class Mem2Reg : public Pass {
   private:
     Function *func_;
     std::unique_ptr<Dominators> dominators_;
-
+    std::unordered_map<Value*,std::vector<BasicBlock*>> crossBB_variable;
+    std::unordered_map<Value*,std::vector<Value*>>variable_stacks;
+    std::unordered_map<Instruction*,Value*> phi_to_variable;
     // TODO 添加需要的变量
 
   public:

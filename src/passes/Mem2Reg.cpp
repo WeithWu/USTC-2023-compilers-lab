@@ -28,6 +28,50 @@ void Mem2Reg::generate_phi() {
     // TODO
     // 步骤一：找到活跃在多个 block 的全局名字集合，以及它们所属的 bb 块
     // 步骤二：从支配树获取支配边界信息，并在对应位置插入 phi 指令
+    std::set<BasicBlock*> F;
+    std::set<BasicBlock*> W;
+    BasicBlock* X=nullptr;
+    for(auto &BB:func_->get_basic_blocks()){
+        for(auto &instr:BB.get_instructions()){
+           if(is_valid_ptr(&instr)){
+                 if(instr.is_alloca()){
+                     crossBB_variable[&instr].push_back(&BB);
+                 }
+                if(instr.is_store()){
+                    if(crossBB_variable[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()==0||crossBB_variable[dynamic_cast<StoreInst*>(&instr)->get_lval()].at(crossBB_variable[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()-1)!=&BB){
+                        crossBB_variable[dynamic_cast<StoreInst*>(&instr)->get_lval()].push_back(&BB);
+                    }
+                }
+           }
+        }
+    }
+    for(auto v:crossBB_variable){
+        F.clear();
+        W.clear();
+        for(auto BB:v.second){
+            W.insert(BB);
+        }
+        while(!W.empty()){
+            X = *W.begin();
+            W.erase(W.begin());
+            for(auto Y:dominators_->get_dominance_frontier(X)){
+                if(F.find(Y)==F.end()){
+                    //FIXME:is all bb needed in phi?
+                    Instruction* temp =PhiInst::create_phi(v.first->get_type(),Y);
+                    Y->add_instr_begin(temp);
+                    phi_to_variable[temp] = v.first;
+                    F.insert(Y);
+                    bool if_in = false;
+                    for (auto k:crossBB_variable[v.first]){
+                        if(k == Y) {if_in =true;break;}
+                    }
+                    if(!if_in){
+                        W.insert(Y);
+                    }
+                }
+            }
+        }
+    }
 }
 
 void Mem2Reg::rename(BasicBlock *bb) {
@@ -39,4 +83,37 @@ void Mem2Reg::rename(BasicBlock *bb) {
     // 步骤七：对 bb 在支配树上的所有后继节点，递归执行 re_name 操作
     // 步骤八：pop出 lval 的最新定值
     // 步骤九：清除冗余的指令
+    
+    //FIXME:stacks only have one item
+    for(auto &instr:bb->get_instructions()){
+        if(instr.is_phi()){
+            variable_stacks[phi_to_variable[&instr]].push_back(&instr);
+
+        }
+        if(instr.is_store()){
+            variable_stacks[dynamic_cast<StoreInst*>(&instr)->get_lval()].push_back(dynamic_cast<StoreInst*>(&instr)->get_rval());
+        }
+        if(instr.is_load()&&variable_stacks[dynamic_cast<LoadInst*>(&instr)->get_lval()].size()!=0){
+            instr.replace_all_use_with(variable_stacks[dynamic_cast<LoadInst*>(&instr)->get_lval()].at(variable_stacks[dynamic_cast<LoadInst*>(&instr)->get_lval()].size()-1));
+
+        }
+    }
+    for(auto S:bb->get_succ_basic_blocks()){
+        for(auto &instr:S->get_instructions()){
+            if(instr.is_phi()&&variable_stacks[phi_to_variable[&instr]].size()!=0){
+                dynamic_cast<PhiInst*>(&instr)->add_phi_pair_operand(variable_stacks[phi_to_variable[&instr]].at(variable_stacks[phi_to_variable[&instr]].size()-1),bb);
+            }
+        }
+    }
+    for(auto S:dominators_->get_dom_tree_succ_blocks(bb)){
+        rename(S);
+    }
+    for(auto &instr:bb->get_instructions()){
+        if(instr.is_store()){
+            variable_stacks[dynamic_cast<StoreInst*>(&instr)->get_lval()].pop_back();
+        }
+        else if(instr.is_phi()){
+            variable_stacks[phi_to_variable[&instr]].pop_back();
+        }
+    }
 }
