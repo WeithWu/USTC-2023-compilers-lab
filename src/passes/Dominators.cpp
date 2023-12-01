@@ -79,8 +79,8 @@ void Dominators::create_dom_tree_succ(Function* f) {
 BasicBlock* Dominators::intersect(BasicBlock* b1, BasicBlock* b2) {
     BasicBlock* finger1 = b1;
     BasicBlock* finger2 = b2;
-    while (finger1!=finger2) {
-        if(cmp_bb_eq(finger1,finger2)) finger1 = get_idom(finger1);
+    while (finger1 != finger2) {
+        if (cmp_bb_eq(finger1, finger2)) finger1 = get_idom(finger1);
         while (cmp_bb_slt(finger1, finger2)) {
             finger1 = get_idom(finger1);
         }
