@@ -30,21 +30,20 @@ void Mem2Reg::generate_phi() {
     // 步骤二：从支配树获取支配边界信息，并在对应位置插入 phi 指令
     std::set<BasicBlock*> F;
     std::set<BasicBlock*> W;
-    std::unordered_map<Value*,std::vector<BasicBlock*>> variables_count;
     BasicBlock* X=nullptr;
     for(auto &BB:func_->get_basic_blocks()){
         for(auto &instr:BB.get_instructions()){
-           if(is_valid_ptr(&instr)){
-                 if(instr.is_alloca()){
+           /*if(is_valid_ptr(&instr))*/{
+                 if(instr.is_alloca()&&!dynamic_cast<AllocaInst*>(&instr)->get_alloca_type()->is_array_type()){
                     variables_count[&instr].push_back(&BB);
                  }
                 if(instr.is_store()){
-                    if(variables_count[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()==0||variables_count[dynamic_cast<StoreInst*>(&instr)->get_lval()].at(variables_count[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()-1)!=&BB){
+                    if(variables_count[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()!=0&&variables_count[dynamic_cast<StoreInst*>(&instr)->get_lval()].at(variables_count[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()-1)!=&BB){
                         variables_count[dynamic_cast<StoreInst*>(&instr)->get_lval()].push_back(&BB);
                     }
                 }
                 if(instr.is_load()){
-                        if(variables_count[dynamic_cast<LoadInst*>(&instr)->get_lval()].size()==0||variables_count[dynamic_cast<LoadInst*>(&instr)->get_lval()].at(variables_count[dynamic_cast<LoadInst*>(&instr)->get_lval()].size()-1)!=&BB){
+                        if(variables_count[dynamic_cast<LoadInst*>(&instr)->get_lval()].size()!=0&&variables_count[dynamic_cast<LoadInst*>(&instr)->get_lval()].at(variables_count[dynamic_cast<LoadInst*>(&instr)->get_lval()].size()-1)!=&BB){
                         variables_count[dynamic_cast<LoadInst*>(&instr)->get_lval()].push_back(&BB);
                     }
                 }
@@ -53,8 +52,8 @@ void Mem2Reg::generate_phi() {
     }
     for(auto &BB:func_->get_basic_blocks()){
         for(auto &instr:BB.get_instructions()){
-           if(is_valid_ptr(&instr)){
-                if(instr.is_store()){
+           /*if(is_valid_ptr(&instr))*/{
+                if(instr.is_store()&&variables_count[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()>1){
                     if(crossBB_variable[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()==0||crossBB_variable[dynamic_cast<StoreInst*>(&instr)->get_lval()].at(crossBB_variable[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()-1)!=&BB){
                         crossBB_variable[dynamic_cast<StoreInst*>(&instr)->get_lval()].push_back(&BB);
                     }
@@ -104,15 +103,15 @@ void Mem2Reg::rename(BasicBlock *bb) {
     
     //FIXME:stacks only have one item
     for(auto &instr:bb->get_instructions()){
-        if(is_valid_ptr(&instr)){
+        /*if(is_valid_ptr(&instr))*/{
         if(instr.is_phi()){
             variable_stacks[phi_to_variable[&instr]].push_back(&instr);
 
         }
-        if(instr.is_store()){
+        if(instr.is_store()&&variables_count[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()!=0){
             variable_stacks[dynamic_cast<StoreInst*>(&instr)->get_lval()].push_back(dynamic_cast<StoreInst*>(&instr)->get_rval());
         }
-        if(instr.is_load()&&variable_stacks[dynamic_cast<LoadInst*>(&instr)->get_lval()].size()!=0){
+        if(instr.is_load()&&variables_count[dynamic_cast<LoadInst*>(&instr)->get_lval()].size()!=0&&variable_stacks[dynamic_cast<LoadInst*>(&instr)->get_lval()].size()!=0){
             instr.replace_all_use_with(variable_stacks[dynamic_cast<LoadInst*>(&instr)->get_lval()].at(variable_stacks[dynamic_cast<LoadInst*>(&instr)->get_lval()].size()-1));
 
         }}
@@ -129,15 +128,15 @@ void Mem2Reg::rename(BasicBlock *bb) {
     }
     std::set<Instruction*>instr_to_rm;
     for(auto &instr:bb->get_instructions()){
-        if(instr.is_store()){
+        if(instr.is_store()&&variables_count[dynamic_cast<StoreInst*>(&instr)->get_lval()].size()!=0){
             variable_stacks[dynamic_cast<StoreInst*>(&instr)->get_lval()].pop_back();
-           if(!is_global_variable(&instr)) instr_to_rm.insert(&instr);
+           instr_to_rm.insert(&instr);
         }
         else if(instr.is_phi()){
             variable_stacks[phi_to_variable[&instr]].pop_back();
         }
     }
-    // for(auto instr:instr_to_rm){
-    //     bb->get_instructions().erase(instr);
-    // }
+     for(auto instr:instr_to_rm){
+         bb->get_instructions().erase(instr);
+     }
 }
