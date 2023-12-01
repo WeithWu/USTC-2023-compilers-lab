@@ -247,10 +247,10 @@ void CodeGen::gen_br() {
                 for (int i=1;i<phiInst->get_operands().size();i=i+2){
                     if(static_cast<BasicBlock*>(phiInst->get_operand(i))==context.inst->get_parent()){
                         if(phiInst->get_operand(i-1)->get_type()->is_float_type()){
-                            load_to_freg(phiInst->get_operand(i-1),FReg::ft(8));
-                            store_from_freg(phiInst,FReg::ft(8));
+                             load_to_freg(phiInst->get_operand(i-1),FReg::ft(8));
+                             store_from_freg(phiInst,FReg::ft(8));
                         }
-                        else {
+                        else if(phiInst->get_operand(i-1)->get_type()->is_integer_type()){
                             load_to_greg(phiInst->get_operand(i-1),Reg::t(8));
                             store_from_greg(phiInst,Reg::t(8));
                         }
@@ -271,7 +271,7 @@ void CodeGen::gen_br() {
                             load_to_freg(phiInst->get_operand(i-1),FReg::ft(8));
                             store_from_freg(phiInst,FReg::ft(8));
                         }
-                        else {
+                        else if(phiInst->get_operand(i-1)->get_type()->is_integer_type()){
                             load_to_greg(phiInst->get_operand(i-1),Reg::t(8));
                             store_from_greg(phiInst,Reg::t(8));
                         }
@@ -299,7 +299,7 @@ void CodeGen::gen_br() {
                             load_to_freg(phiInst->get_operand(i-1),FReg::ft(8));
                             store_from_freg(phiInst,FReg::ft(8));
                         }
-                        else {
+                        else if(phiInst->get_operand(i-1)->get_type()->is_integer_type()){
                             load_to_greg(phiInst->get_operand(i-1),Reg::t(8));
                             store_from_greg(phiInst,Reg::t(8));
                         }
